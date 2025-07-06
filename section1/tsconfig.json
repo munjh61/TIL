@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    // "target": "es5" // () => 함수가 없기 때문에 화살표 함수가 다른 함수 표현식으로 바뀌는 것을 볼 수 있다.
+    "target": "esnext", // 자바스크립트 최신버전
+    // "module": "CommonJS" // 과거 모듈 시스템 반환되는 방식
+    "module": "esnext",
+    "outDir": "dist", // 컴파일된 js파일 생성 경로
+    "strict": false, // 타입스크립트 엄격한 정도
+    "moduleDetection": "force", // 같은 경로에 있는 파일들의 변수 이름 중복 허용 여부
+    "skipLibCheck": true // 라이브러리 체크 넘어가기
+  },
+  "include": ["src"] // src 경로 안에 있는 모든 파일을 한번에 컴파일하라는 뜻
+}
