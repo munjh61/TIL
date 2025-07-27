@@ -1,9 +1,14 @@
-const Button = (children, text, color = "black") => {
+const Button = ({children, text, color = "black"}) => {
+  const onClickButton = () => {
+    console.log(text);
+  }
+
   return (
     <button
-      onClick={() => {
-        console.log(text);
-      }}
+      onClick={onClickButton}
+      // onClick={() => {
+      //   console.log(text);
+      // }}
       style={{ color: color }}
     >
       {text}
