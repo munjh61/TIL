@@ -1,0 +1,54 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\SelfStudy\\git\\TIL\\Csharp\\Server\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{787D26D8-B72E-40CA-A0AB-2CB916FCA4FD}|ServerCore\\ServerCore.csproj|c:\\selfstudy\\git\\til\\csharp\\server\\servercore\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{787D26D8-B72E-40CA-A0AB-2CB916FCA4FD}|ServerCore\\ServerCore.csproj|solutionrelative:servercore\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{787D26D8-B72E-40CA-A0AB-2CB916FCA4FD}|ServerCore\\ServerCore.csproj|c:\\selfstudy\\git\\til\\csharp\\server\\servercore\\lock.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{787D26D8-B72E-40CA-A0AB-2CB916FCA4FD}|ServerCore\\ServerCore.csproj|solutionrelative:servercore\\lock.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\SelfStudy\\git\\TIL\\Csharp\\Server\\ServerCore\\Program.cs",
+              "RelativeDocumentMoniker": "ServerCore\\Program.cs",
+              "ToolTip": "C:\\SelfStudy\\git\\TIL\\Csharp\\Server\\ServerCore\\Program.cs",
+              "RelativeToolTip": "ServerCore\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-31T21:08:46.525Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Lock.cs",
+              "DocumentMoniker": "C:\\SelfStudy\\git\\TIL\\Csharp\\Server\\ServerCore\\Lock.cs",
+              "RelativeDocumentMoniker": "ServerCore\\Lock.cs",
+              "ToolTip": "C:\\SelfStudy\\git\\TIL\\Csharp\\Server\\ServerCore\\Lock.cs",
+              "RelativeToolTip": "ServerCore\\Lock.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAD4AAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-31T20:26:00.772Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
