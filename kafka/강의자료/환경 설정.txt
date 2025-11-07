@@ -1,0 +1,24 @@
+### docker mysql 컨테이너 생성
+
+docker pull mysql:8.0.38
+docker run --name kuke-board-mysql-e 
+MYSQL_ROOT_PASSWORD=root -d -p 3307:3306 mysql:8.0.38
+
+### 실행
+docker exec -it kuke-board-mysql bash
+mysql -u root -p
+root
+
+### 테이블 설계
+create database article;
+use article;
+
+create table article (
+ article_id bigint not null primary key,
+ title varchar(100) not null,
+ content varchar(3000) not null,
+ board_id bigint not null,
+ writer_id bigint not null,
+ created_at datetime not null,
+ modified_at datetime not null
+ );
