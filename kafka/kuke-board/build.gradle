@@ -1,15 +1,13 @@
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.2'
-    id 'io.spring.dependency-management' version '1.1.1'
+    id 'io.spring.dependency-management' version '1.1.6'
 }
 
 group = 'kuke'
 version = '1'
-description = 'kuke-board'
 
 allprojects {
-
     repositories {
         mavenCentral()
     }
@@ -24,10 +22,14 @@ allprojects {
     }
 
     dependencies {
+        implementation 'ch.qos.logback:logback-classic'
+
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
+
         testCompileOnly 'org.projectlombok:lombok'
         testAnnotationProcessor 'org.projectlombok:lombok'
+
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }
@@ -36,4 +38,3 @@ allprojects {
         useJUnitPlatform()
     }
 }
-
