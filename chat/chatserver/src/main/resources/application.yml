@@ -7,8 +7,12 @@ spring:
   jpa:
     database: mysql
 #   InnoDB
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     generate-ddl: true
     hibernate:
       ddl-auto: update
     show-sql: true
+
+jwt:
+  secretKey: ${JWT_SECRET_KEY}
+  expiration: 3000 # 3000 minute
