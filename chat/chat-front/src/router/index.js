@@ -1,5 +1,6 @@
 import LoginPage from "@/views/LoginPage.vue"
 import MemberCreate from "@/views/MemberCreate.vue"
+import MemberList from "@/views/MemberList.vue"
 import { createRouter, createWebHistory } from "vue-router"
 
 const routes = [
@@ -12,6 +13,11 @@ const routes = [
         path:'/login',
         name: 'LoginPage',
         component: LoginPage
+    },
+    {
+        path:'/member/list',
+        name: 'MemberList',
+        component: MemberList
     }
 ]
 const router = createRouter({
