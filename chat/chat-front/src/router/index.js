@@ -1,6 +1,7 @@
 import LoginPage from "@/views/LoginPage.vue"
 import MemberCreate from "@/views/MemberCreate.vue"
 import MemberList from "@/views/MemberList.vue"
+import SimpleWebSocket from "@/views/SimpleWebSocket.vue"
 import { createRouter, createWebHistory } from "vue-router"
 
 const routes = [
@@ -18,6 +19,11 @@ const routes = [
         path:'/member/list',
         name: 'MemberList',
         component: MemberList
+    },
+    {
+        path:'/simple/chat',
+        name: 'SimpleWebSocket',
+        component: SimpleWebSocket
     }
 ]
 const router = createRouter({
