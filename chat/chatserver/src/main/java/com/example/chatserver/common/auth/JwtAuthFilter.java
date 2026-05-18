@@ -26,6 +26,13 @@ import java.util.List;
 
 @Component
 public class JwtAuthFilter extends GenericFilter {
+
+    private final SecretKey SECRET_KEY;
+
+    public JwtAuthFilter(@Value("${jwt.secretKey}") String secretKey) {
+        this.SECRET_KEY = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
+    }
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
@@ -38,7 +45,6 @@ public class JwtAuthFilter extends GenericFilter {
                 }
                 String jwtToken = token.substring(7);
                 // 토큰 검증 및 Payload 추출
-
                 Claims claims = Jwts.parser()
                         .verifyWith(SECRET_KEY)
                         .build()
@@ -58,11 +64,5 @@ public class JwtAuthFilter extends GenericFilter {
             httpServletResponse.setContentType("application/json");
             httpServletResponse.getWriter().write("invalid token");
         }
-    }
-
-    private final SecretKey SECRET_KEY;
-
-    public JwtAuthFilter(@Value("${jwt.secretKey}") String secretKey) {
-        this.SECRET_KEY = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
     }
 }

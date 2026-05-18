@@ -19,6 +19,7 @@
 </template>
 <script setup>
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -34,7 +35,11 @@ const doLogin = async () => {
     }
     const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/member/doLogin`, loginData)
     const token = res.data.token
+    const role = jwtDecode(token).role
+    const userEmail = jwtDecode(token).sub
     localStorage.setItem("token", token)
+    localStorage.setItem("role", role)
+    localStorage.setItem("email", userEmail)
     window.location.href="/"
 }
 </script>
