@@ -40,7 +40,8 @@ const doLogin = async () => {
     localStorage.setItem("token", token)
     localStorage.setItem("role", role)
     localStorage.setItem("email", userEmail)
-    window.location.href="/"
+    router.push('/')
+    // window.location.href="/"
 }
 </script>
 <style scoped></style>
