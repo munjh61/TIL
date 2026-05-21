@@ -33,5 +33,5 @@ public class ChatMessage extends BaseTimeEntity {
     private String content;
 
     @OneToMany(mappedBy = "chatMessage", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<ReadState> readStateList = new ArrayList<>();
+    private List<ReadStatus> readStatuses = new ArrayList<>();
 }
