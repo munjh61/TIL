@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -69,9 +70,7 @@ public class ChatService {
     }
 
     public void createGroupRoom(String roomName) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) throw new AccessDeniedException("로그인 필요");
-        String email = authentication.getName();
+        String email = getEmail();
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("member cannot be found"));
 
         // 채팅방 생성
@@ -89,7 +88,7 @@ public class ChatService {
     }
 
     public List<ChatRoomListResDto> getGroupChatRooms (){
-        List<ChatRoom> chatRooms = chatRoomRepository.findByIsCroupChat("Y");
+        List<ChatRoom> chatRooms = chatRoomRepository.findByIsGroupChat("Y");
         List<ChatRoomListResDto> dtos = new ArrayList<>();
         for(ChatRoom r : chatRooms){
             ChatRoomListResDto dto = ChatRoomListResDto.builder()
@@ -99,5 +98,33 @@ public class ChatService {
             dtos.add(dto);
         }
         return dtos;
+    }
+
+    public void addParticipantToGroupChat(Long roomId){
+        // 채팅방 조회
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(()-> new EntityNotFoundException("room cannot be found"));
+        // member 조회
+        String email = getEmail();
+        Member member = memberRepository.findByEmail(email).orElseThrow(()-> new EntityNotFoundException("member cannot be found"));
+        // 이미 참여자인지 검증
+        Optional<ChatParticipant> participant = chatParticipantRepository.findByChatRoomAndMember(chatRoom, member);
+        if(participant.isEmpty()){
+            // ChatParticipant 저장
+            addParticipantToRoom(chatRoom, member);
+        }
+    }
+
+    public void addParticipantToRoom(ChatRoom chatRoom, Member member){
+        ChatParticipant chatParticipant = ChatParticipant.builder()
+                .chatRoom(chatRoom)
+                .member(member)
+                .build();
+        chatParticipantRepository.save(chatParticipant);
+    }
+
+    private String getEmail(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) throw new AccessDeniedException("로그인 필요");
+        return authentication.getName();
     }
 }

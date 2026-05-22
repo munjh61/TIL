@@ -24,8 +24,10 @@
 <script setup>
 import SockJS from 'sockjs-client';
 import { nextTick, onMounted, onUnmounted, ref } from 'vue';
-import { onBeforeRouteLeave } from 'vue-router';
+import { onBeforeRouteLeave, useRoute } from 'vue-router';
 import webstomp from 'webstomp-client';
+
+const route = useRoute()
 
 const messages = ref([])
 const newMessage = ref('')
@@ -33,9 +35,12 @@ const chatbox = ref(null)
 const stompClient = ref(null)
 const token = ref('')
 const senderEmail = ref(null)
+const roomId = ref(null);
+
 
 onMounted(() => {
     senderEmail.value = localStorage.getItem("email")
+    roomId.value = route.params.roomId;
     connectWebSocket()
 })
 
@@ -64,7 +69,7 @@ function connectWebSocket() {
         },
         () => {
             console.log('STOMP 연결 성공')
-            stompClient.value.subscribe(`/topic/1`, async (message) => {
+            stompClient.value.subscribe(`/topic/${roomId.value}`, async (message) => {
                 const parseMessage = JSON.parse(message.body)
                 messages.value.push(parseMessage)
                 await nextTick()
@@ -84,7 +89,7 @@ function sendMessage() {
         senderEmail: senderEmail.value,
         message: newMessage.value
     }
-    stompClient.value.send(`/publish/1`, JSON.stringify(message))
+    stompClient.value.send(`/publish/${roomId.value}`, JSON.stringify(message))
     newMessage.value = ''
 }
 
@@ -95,7 +100,7 @@ function scrollToBottom() {
 
 function disconnectWebSocket(){
     if(stompClient.value && stompClient.value.connected){
-        stompClient.value.unsubscribe(`/topic/1`)
+        stompClient.value.unsubscribe(`/topic/${roomId.value}`)
         stompClient.value.disconnect()
     }
 }
