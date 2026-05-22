@@ -167,6 +167,16 @@ public class ChatService {
         return flag;
     }
 
+    public void messageRead(Long roomId){
+        String email = getEmail();
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(()-> new EntityNotFoundException("room cannot be found"));
+        Member member = memberRepository.findByEmail(email).orElseThrow(()-> new EntityNotFoundException("member cannot be found"));
+        List<ReadStatus> readStatuses = readStatusRepository.findByChatRoomAndMember(chatRoom, member);
+        for(ReadStatus s: readStatuses){
+            s.updateIsRead(true);
+        }
+    }
+
     private String getEmail(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) throw new AccessDeniedException("로그인 필요");
