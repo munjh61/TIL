@@ -22,6 +22,7 @@
     </v-container>
 </template>
 <script setup>
+import axios from 'axios';
 import SockJS from 'sockjs-client';
 import { nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { onBeforeRouteLeave, useRoute } from 'vue-router';
@@ -41,10 +42,11 @@ const roomId = ref(null);
 onMounted(() => {
     senderEmail.value = localStorage.getItem("email")
     roomId.value = route.params.roomId;
+    loadHistory()
     connectWebSocket()
 })
 
-onBeforeRouteLeave((to, from, next)=>{
+onBeforeRouteLeave((to, from, next) => {
     if (stompClient.value) {
         disconnectWebSocket()
     }
@@ -58,27 +60,42 @@ onUnmounted(() => {
 })
 
 function connectWebSocket() {
-    if(stompClient.value && stompClient.value.connected) return // 중복된 객체 만들지 않도록
-    // sockJS는 websocket을 내장한 js 라이브러리, http 엔드포인트 사용
+    if (stompClient.value && stompClient.value.connected) return // 이미 연결된 경우 중복 연결 방지
+
+    // SockJS는 WebSocket 연결을 브라우저 호환성 있게 지원하는 라이브러리
+    // 서버의 STOMP endpoint(/connect)로 연결 요청. http 사용
     const sockJs = new SockJS(`${import.meta.env.VITE_BASE_URL}/connect`)
     stompClient.value = webstomp.over(sockJs)
     token.value = localStorage.getItem("token")
     stompClient.value.connect(
+        // STOMP CONNECT frame header
         {
             Authorization: `Bearer ${token.value}`
         },
+        // 연결 성공시
         () => {
             console.log('STOMP 연결 성공')
-            stompClient.value.subscribe(`/topic/${roomId.value}`, async (message) => {
-                const parseMessage = JSON.parse(message.body)
-                messages.value.push(parseMessage)
-                await nextTick()
-                scrollToBottom()
-            })
-        },
-        (error) => {
-            console.error('STOMP 연결 실패:')
-        }
+            stompClient.value.subscribe(
+                // 구독 destination
+                `/topic/${roomId.value}`,
+                // 받은 메세지로 할 행동
+                async (message) => {
+                    const parseMessage = JSON.parse(message.body)
+                    messages.value.push(parseMessage)
+                    await nextTick()
+                    scrollToBottom()
+                },
+                // SUBSCRIBE 요청 시 함께 보낼 header
+                // 필수는 아니지만, 서버에서 구독 권한 검증이 필요한 경우 token 전달
+                {
+                Authorization: `Bearer ${token.value}`
+                }
+    )
+},
+// 연결 실패시
+(error) => {
+    console.error('STOMP 연결 실패')
+}
     )
 }
 
@@ -98,11 +115,16 @@ function scrollToBottom() {
     chatbox.value.scrollTop = chatbox.value.scrollHeight
 }
 
-function disconnectWebSocket(){
-    if(stompClient.value && stompClient.value.connected){
+function disconnectWebSocket() {
+    if (stompClient.value && stompClient.value.connected) {
         stompClient.value.unsubscribe(`/topic/${roomId.value}`)
         stompClient.value.disconnect()
     }
+}
+
+async function loadHistory() {
+    const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/chat/history/${roomId.value}`)
+    messages.value = res.data
 }
 
 </script>
@@ -114,15 +136,15 @@ function disconnectWebSocket(){
     margin-bottom: 10px;
 }
 
-.chat-message{
+.chat-message {
     margin-bottom: 10px;
 }
 
-.sent{
+.sent {
     text-align: right;
 }
 
-.received{
+.received {
     text-align: left;
 }
 </style>
