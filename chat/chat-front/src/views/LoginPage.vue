@@ -21,9 +21,9 @@
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+// import { useRouter } from 'vue-router';
 
-const router = useRouter()
+// const router = useRouter()
 
 const email = ref('')
 const password = ref('')
@@ -40,8 +40,8 @@ const doLogin = async () => {
     localStorage.setItem("token", token)
     localStorage.setItem("role", role)
     localStorage.setItem("email", userEmail)
-    router.push('/')
-    // window.location.href="/"
+    // router.push('/')
+    window.location.href="/"
 }
 </script>
 <style scoped></style>

@@ -6,6 +6,7 @@ import com.example.chatserver.chat.domain.ChatRoom;
 import com.example.chatserver.chat.domain.ReadStatus;
 import com.example.chatserver.chat.dto.ChatMessageDto;
 import com.example.chatserver.chat.dto.ChatRoomListResDto;
+import com.example.chatserver.chat.dto.MyChatListResDto;
 import com.example.chatserver.chat.repository.ChatMessageRepository;
 import com.example.chatserver.chat.repository.ChatParticipantRepository;
 import com.example.chatserver.chat.repository.ChatRoomRepository;
@@ -174,6 +175,43 @@ public class ChatService {
         List<ReadStatus> readStatuses = readStatusRepository.findByChatRoomAndMember(chatRoom, member);
         for(ReadStatus s: readStatuses){
             s.updateIsRead(true);
+        }
+    }
+
+    public List<MyChatListResDto> getMyChatRooms(){
+        String email = getEmail();
+        Member member = memberRepository.findByEmail(email).orElseThrow(()-> new EntityNotFoundException("member cannot be found"));
+        List<ChatParticipant> chatParticipants = chatParticipantRepository.findAllByMember(member);
+
+        List<MyChatListResDto> dtos = new ArrayList<>();
+        for(ChatParticipant p : chatParticipants){
+            Long count = readStatusRepository.countByChatRoomAndMemberAndIsReadFalse(p.getChatRoom(), p.getMember());
+            MyChatListResDto dto = MyChatListResDto.builder()
+                    .roomId(p.getChatRoom().getId())
+                    .roomName(p.getChatRoom().getName())
+                    .isGroupChat(p.getChatRoom().getIsGroupChat())
+                    .unReadCount(count)
+                    .build();
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
+    public void leaveGroupChatRoom(Long roomId){
+        String email = getEmail();
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(()-> new EntityNotFoundException("room cannot be found"));
+        Member member = memberRepository.findByEmail(email).orElseThrow(()-> new EntityNotFoundException("member cannot be found"));
+
+        if(chatRoom.getIsGroupChat().equals("M")) throw new IllegalArgumentException("단체 채팅방이 아닙니다.");
+
+        ChatParticipant p = chatParticipantRepository.findByChatRoomAndMember(chatRoom, member).orElseThrow(()-> new EntityNotFoundException("참여 정보를 찾을 수 없습니다."));
+        chatParticipantRepository.delete(p);
+
+        // 남은 참여자가 없다면 채팅방 삭제
+        List<ChatParticipant> chatParticipants = chatParticipantRepository.findByChatRoom(chatRoom);
+        if(chatParticipants.isEmpty()){
+            // Casecade, orphanRemove 설정해 놓았기 때문에 chatRoom만 삭제하면 된다
+            chatRoomRepository.delete(chatRoom);
         }
     }
 

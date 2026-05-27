@@ -47,16 +47,12 @@ onMounted(() => {
 })
 
 onBeforeRouteLeave((to, from, next) => {
-    if (stompClient.value) {
-        disconnectWebSocket()
-    }
+    disconnectWebSocket()
     next()
 })
 
 onUnmounted(() => {
-    if (stompClient.value) {
-        disconnectWebSocket()
-    }
+    disconnectWebSocket()
 })
 
 function connectWebSocket() {
@@ -88,14 +84,14 @@ function connectWebSocket() {
                 // SUBSCRIBE 요청 시 함께 보낼 header
                 // 필수는 아니지만, 서버에서 구독 권한 검증이 필요한 경우 token 전달
                 {
-                Authorization: `Bearer ${token.value}`
+                    Authorization: `Bearer ${token.value}`
                 }
-    )
-},
-// 연결 실패시
-(error) => {
-    console.error('STOMP 연결 실패')
-}
+            )
+        },
+        // 연결 실패시
+        (error) => {
+            console.error('STOMP 연결 실패')
+        }
     )
 }
 
@@ -115,7 +111,12 @@ function scrollToBottom() {
     chatbox.value.scrollTop = chatbox.value.scrollHeight
 }
 
-function disconnectWebSocket() {
+async function disconnectWebSocket() {
+
+    // 읽은 메시지 처리 (이 부분은 어떻게 구현하느냐에 따라 상이함)
+    await axios.post(`${import.meta.env.VITE_BASE_URL}/chat/room/${roomId.value}/read`)
+
+    // disconnect
     if (stompClient.value && stompClient.value.connected) {
         stompClient.value.unsubscribe(`/topic/${roomId.value}`)
         stompClient.value.disconnect()
