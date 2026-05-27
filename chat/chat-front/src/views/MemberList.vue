@@ -21,7 +21,7 @@
                                     <td>{{ member.id }}</td>
                                     <td>{{ member.name }}</td>
                                     <td>{{ member.email }}</td>
-                                    <td><v-btn>채팅하기</v-btn></td>
+                                    <td><v-btn color="primary" @click="startChat(member.id)">채팅하기</v-btn></td>
                                 </tr>
                             </tbody>
                         </v-table>
@@ -34,6 +34,9 @@
 <script setup>
 import axios from 'axios';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
 
 const memberList = ref([])
 
@@ -42,6 +45,13 @@ getMemberList()
 async function getMemberList() {
     const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/member/list`)
     memberList.value = res.data
+}
+
+async function startChat(){
+    // 기존의 채팅방이 있으면 return 받고, 없으면 새로운 roomId return 받음
+    const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/member/list`)
+    const roomId = res.data
+    router.push(`/chatpage?${roomId}`)
 }
 </script>
 <style scoped></style>

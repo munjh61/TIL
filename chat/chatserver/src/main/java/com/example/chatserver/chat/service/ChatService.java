@@ -107,6 +107,8 @@ public class ChatService {
         // member 조회
         String email = getEmail();
         Member member = memberRepository.findByEmail(email).orElseThrow(()-> new EntityNotFoundException("member cannot be found"));
+        // 그룹 채팅 여부
+        if(chatRoom.getIsGroupChat().equals("N")) throw new IllegalArgumentException("그룹채팅이 아닙니다");
         // 이미 참여자인지 검증
         Optional<ChatParticipant> participant = chatParticipantRepository.findByChatRoomAndMember(chatRoom, member);
         if(participant.isEmpty()){
@@ -213,6 +215,19 @@ public class ChatService {
             // Casecade, orphanRemove 설정해 놓았기 때문에 chatRoom만 삭제하면 된다
             chatRoomRepository.delete(chatRoom);
         }
+    }
+
+    public Long getOrCreatePrivateRoom(Long otherMemberId){
+        String email = getEmail();
+        Member me = memberRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("member cannot be found"));
+        Member other = memberRepository.findById(otherMemberId).orElseThrow(() -> new EntityNotFoundException("member cannot be found"));
+
+        // 나와 상대방이 1:1 채팅에 이미 참석하고 있다면 해당 roomId return
+        chatParticipantRepository.findPrivateChatRoom(me.getId(), other.getId());
+        // 만약 1:1 채팅방이 없을 경우 기존 채팅방 개설
+
+        // 두사람 모두 참여자로 새롭게 추가
+
     }
 
     private String getEmail(){

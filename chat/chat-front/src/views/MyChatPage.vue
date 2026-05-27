@@ -17,11 +17,11 @@
                             </thead>
                             <tbody>
                                 <tr v-for="chat in chatList" :key="chat.roomId">
-                                    <td>{{ chat.name }}</td>
+                                    <td>{{ chat.roomName }}</td>
                                     <td>{{ chat.unReadCount }}</td>
                                     <td>
                                         <v-btn color="primary" @click="enterChatRoom(chat.roomId)">입장</v-btn>
-                                        <v-btn color="secondary" :disabled="chat.isGroupChat === 'Y'" @click="leaveChatRoom(chat.roomId)">퇴장</v-btn>
+                                        <v-btn color="secondary" :disabled="chat.isGroupChat !== 'Y'" @click="leaveChatRoom(chat.roomId)">퇴장</v-btn>
                                     </td>
                                 </tr>
                             </tbody>
@@ -34,13 +34,19 @@
 </template>
 <script setup>
 import axios from 'axios';
-import { ref } from 'vue';
+import { onActivated, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vuetify/lib/composables/router.mjs';
 
 const router = useRouter()
 const chatList = ref([])
 
-getChatList()
+onMounted(()=>{
+    getChatList()
+})
+
+onActivated(()=>{
+    getChatList()
+})
 
 async function getChatList() {
     const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/chat/my/rooms`)
