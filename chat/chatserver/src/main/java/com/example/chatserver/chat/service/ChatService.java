@@ -223,11 +223,18 @@ public class ChatService {
         Member other = memberRepository.findById(otherMemberId).orElseThrow(() -> new EntityNotFoundException("member cannot be found"));
 
         // 나와 상대방이 1:1 채팅에 이미 참석하고 있다면 해당 roomId return
-        chatParticipantRepository.findPrivateChatRoom(me.getId(), other.getId());
+        Optional<ChatRoom> chatRoom = chatParticipantRepository.findPrivateChatRoom(me.getId(), other.getId());
+        if(chatRoom.isPresent()) return chatRoom.get().getId();
         // 만약 1:1 채팅방이 없을 경우 기존 채팅방 개설
-
+        ChatRoom newRoom = ChatRoom.builder()
+                .isGroupChat("N")
+                .name(me.getName()+"-"+other.getName())
+                .build();
+        chatRoomRepository.save(newRoom);
         // 두사람 모두 참여자로 새롭게 추가
-
+        addParticipantToRoom(newRoom, me);
+        addParticipantToRoom(newRoom, other);
+        return newRoom.getId();
     }
 
     private String getEmail(){

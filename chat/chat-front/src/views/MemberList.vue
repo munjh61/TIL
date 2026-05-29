@@ -47,11 +47,11 @@ async function getMemberList() {
     memberList.value = res.data
 }
 
-async function startChat(){
+async function startChat(otherMemberId){
     // 기존의 채팅방이 있으면 return 받고, 없으면 새로운 roomId return 받음
-    const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/member/list`)
+    const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/chat/room/private/create?otherMemberId=${otherMemberId}`)
     const roomId = res.data
-    router.push(`/chatpage?${roomId}`)
+    router.push(`/chatpage/${roomId}`)
 }
 </script>
 <style scoped></style>
