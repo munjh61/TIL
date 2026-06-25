@@ -204,7 +204,7 @@ public class ChatService {
         ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(()-> new EntityNotFoundException("room cannot be found"));
         Member member = memberRepository.findByEmail(email).orElseThrow(()-> new EntityNotFoundException("member cannot be found"));
 
-        if(chatRoom.getIsGroupChat().equals("M")) throw new IllegalArgumentException("단체 채팅방이 아닙니다.");
+        if(chatRoom.getIsGroupChat().equals("N")) throw new IllegalArgumentException("단체 채팅방이 아닙니다.");
 
         ChatParticipant p = chatParticipantRepository.findByChatRoomAndMember(chatRoom, member).orElseThrow(()-> new EntityNotFoundException("참여 정보를 찾을 수 없습니다."));
         chatParticipantRepository.delete(p);
@@ -212,7 +212,7 @@ public class ChatService {
         // 남은 참여자가 없다면 채팅방 삭제
         List<ChatParticipant> chatParticipants = chatParticipantRepository.findByChatRoom(chatRoom);
         if(chatParticipants.isEmpty()){
-            // Casecade, orphanRemove 설정해 놓았기 때문에 chatRoom만 삭제하면 된다
+            // Cascade, orphanRemove 설정해 놓았기 때문에 chatRoom만 삭제하면 된다
             chatRoomRepository.delete(chatRoom);
         }
     }
